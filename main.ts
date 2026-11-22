@@ -16,16 +16,16 @@ if(t+i>=n)return D(9);
 u++;
 if(s<P[x])return D(2);
 if(s-P[x]+Q[x]>256)return D(3);
-const y=t+1+i;t=y;
+const y=t+=1+i;
 switch(x){
 case 0:return D(0);
 case 1:S[s++]=(p[y-1]<<24)>>24;break;
 case 2:S[s++]=p[y-4]|(p[y-3]<<8)|(p[y-2]<<16)|(p[y-1]<<24);break;
 case 3:s--;break;
 case 4:S[s]=S[s-1];s++;break;
-case 5:{const a=S[s-1];S[s-1]=S[s-2];S[s-2]=a;break}
+case 5:{[S[s-2],S[s-1]]=[S[s-1],S[s-2]];break}
 case 6:S[s]=S[s-2];s++;break;
-case 7:{const a=S[s-3];S[s-3]=S[s-2];S[s-2]=S[s-1];S[s-1]=a;break}
+case 7:{[S[s-3],S[s-2],S[s-1]]=[S[s-2],S[s-1],S[s-3]];break}
 case 23:S[s-1]=-S[s-1];break;
 case 27:S[s-1]=~S[s-1];break;
 case 16:case 17:case 18:case 19:case 20:case 21:case 22:case 24:case 25:case 26:case 28:case 29:case 30:case 32:case 33:case 34:{
