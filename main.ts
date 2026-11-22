@@ -103,30 +103,35 @@ function run(p: Uint8Array, inp: Uint8Array): { out: Uint8Array; code: number } 
         const b = S[sp - 1];
         const a = S[sp - 2];
         let r: number;
-        if (op === 0x10) r = (a + b) | 0;
-        else if (op === 0x11) r = (a - b) | 0;
-        else if (op === 0x12) r = Math.imul(a, b);
-        else if (op === 0x13) {
-          if (b === 0) return done(4);
-          r = a === -2147483648 && b === -1 ? a : (a / b) | 0;
-        } else if (op === 0x14) {
-          if (b === 0) return done(4);
-          r = b === -1 ? 0 : (a % b) | 0;
-        } else if (op === 0x15) {
-          if (b === 0) return done(4);
-          r = Math.floor((a >>> 0) / (b >>> 0)) | 0;
-        } else if (op === 0x16) {
-          if (b === 0) return done(4);
-          r = ((a >>> 0) % (b >>> 0)) | 0;
-        } else if (op === 0x18) r = a & b;
-        else if (op === 0x19) r = a | b;
-        else if (op === 0x1a) r = a ^ b;
-        else if (op === 0x1c) r = a << (b & 31);
-        else if (op === 0x1d) r = a >> (b & 31);
-        else if (op === 0x1e) r = (a >>> (b & 31)) | 0;
-        else if (op === 0x20) r = a === b ? 1 : 0;
-        else if (op === 0x21) r = a < b ? 1 : 0;
-        else r = (a >>> 0) < (b >>> 0) ? 1 : 0;
+        if (op <= 0x16) {
+          if (op === 0x10) r = (a + b) | 0;
+          else if (op === 0x11) r = (a - b) | 0;
+          else if (op === 0x12) r = Math.imul(a, b);
+          else if (op === 0x13) {
+            if (b === 0) return done(4);
+            r = a === -2147483648 && b === -1 ? a : (a / b) | 0;
+          } else if (op === 0x14) {
+            if (b === 0) return done(4);
+            r = b === -1 ? 0 : (a % b) | 0;
+          } else if (op === 0x15) {
+            if (b === 0) return done(4);
+            r = Math.floor((a >>> 0) / (b >>> 0)) | 0;
+          } else { // 0x16
+            if (b === 0) return done(4);
+            r = ((a >>> 0) % (b >>> 0)) | 0;
+          }
+        } else if (op <= 0x1e) {
+          if (op === 0x18) r = a & b;
+          else if (op === 0x19) r = a | b;
+          else if (op === 0x1a) r = a ^ b;
+          else if (op === 0x1c) r = a << (b & 31);
+          else if (op === 0x1d) r = a >> (b & 31);
+          else r = (a >>> (b & 31)) | 0; // 0x1e
+        } else {
+          if (op === 0x20) r = a === b ? 1 : 0;
+          else if (op === 0x21) r = a < b ? 1 : 0;
+          else r = (a >>> 0) < (b >>> 0) ? 1 : 0; // 0x22
+        }
         sp -= 2;
         S[sp++] = r;
         break;
